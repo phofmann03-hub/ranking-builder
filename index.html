@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111111">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Ranking Builder">
+  <title>Ranking Video Builder</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>🏆 Ranking Video Builder</h1>
+  </header>
+
+  <main id="app">
+    <section class="card">
+      <label class="field-label" for="title">Titel des Videos</label>
+      <input id="title" class="big-input" type="text" placeholder="z.B. Top 10 schnellste Autos" autocomplete="off" enterkeyhint="done">
+    </section>
+
+    <section class="card">
+      <label class="btn btn-primary btn-block file-btn">
+        ➕ Clips hinzufügen
+        <input id="fileInput" type="file" accept="video/*,.mov,.mp4,.m4v" multiple>
+      </label>
+      <p class="hint">MP4 oder MOV aus der Fotomediathek. Reihenfolge = Abspielreihenfolge (von oben nach unten).</p>
+
+      <div class="settings-row">
+        <label class="check">
+          <input id="autoPlaces" type="checkbox" checked>
+          <span>Plätze automatisch (Countdown)</span>
+        </label>
+      </div>
+      <div class="settings-row">
+        <label for="defaultDuration">Dauer für alle</label>
+        <div class="inline">
+          <input id="defaultDuration" class="num-input" type="number" inputmode="decimal" min="1" max="60" step="0.5" value="7">
+          <span>s</span>
+          <button id="applyDuration" class="btn btn-small" type="button">Übernehmen</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="totalBar" class="total-bar">
+      <div>
+        <span class="total-label">Gesamtlänge</span>
+        <span id="totalTime" class="total-time">0:00</span>
+        <span id="clipCount" class="clip-count">0 Clips</span>
+      </div>
+      <div id="totalWarn" class="total-warn" hidden>⚠️ Unter 61 Sekunden</div>
+    </section>
+
+    <ol id="clipList" class="clip-list"></ol>
+    <p id="emptyState" class="empty">Noch keine Clips. Tippe oben auf „Clips hinzufügen“.</p>
+
+    <section class="card actions">
+      <button id="previewBtn" class="btn btn-secondary btn-block" type="button" disabled>▶️ Vorschau abspielen</button>
+      <button id="exportBtn" class="btn btn-primary btn-block btn-xl" type="button" disabled>🎬 Video erstellen (MP4)</button>
+      <p class="hint">Der Export läuft in Echtzeit (ein 70-Sekunden-Video braucht ca. 70 Sekunden). Bildschirm anlassen und die App während des Exports nicht verlassen.</p>
+    </section>
+
+    <p class="footer-note">Alles läuft lokal auf deinem Gerät – es wird nichts hochgeladen.</p>
+  </main>
+
+  <!-- Render / Export overlay -->
+  <div id="renderView" class="render-view" hidden>
+    <div class="render-inner">
+      <div id="renderStatus" class="render-status">Vorbereiten…</div>
+      <div class="canvas-wrap"><canvas id="stage" width="1080" height="1920"></canvas></div>
+      <div class="progress"><div id="progressBar" class="progress-bar"></div></div>
+      <div id="progressText" class="progress-text"></div>
+      <button id="cancelBtn" class="btn btn-danger btn-block" type="button">Abbrechen</button>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div id="resultView" class="render-view" hidden>
+    <div class="render-inner">
+      <div class="render-status">✅ Fertig!</div>
+      <video id="resultVideo" class="result-video" controls playsinline></video>
+      <div id="resultInfo" class="progress-text"></div>
+      <button id="shareBtn" class="btn btn-primary btn-block btn-xl" type="button">📲 Teilen / In Fotos sichern</button>
+      <a id="downloadLink" class="btn btn-secondary btn-block" download="ranking.mp4">⬇️ Herunterladen</a>
+      <button id="closeResult" class="btn btn-block" type="button">Zurück zum Bearbeiten</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <!-- Hidden players used for rendering -->
+  <div class="players" aria-hidden="true">
+    <video id="playerA" playsinline webkit-playsinline preload="auto"></video>
+    <video id="playerB" playsinline webkit-playsinline preload="auto"></video>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
